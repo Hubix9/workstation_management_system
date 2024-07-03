@@ -1,0 +1,28 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+<nav class="container">
+	<ul>
+		<li><strong>Workstation Management Dashboard</strong></li>
+	</ul>
+	{% include "frontend/navbar_buttons.html" %}
+</nav>
+<div style="text-align: center;" class="container">
+	<div class="grid">
+		<div>
+			<article class="container">
+				<header class="container" style="text-align: center;">Reservation information:</header>
+				<div class="container"
+					hx-get="{% url 'view_reservation_table' reservation_id=reservation.id %}"
+					hx-trigger="load, every 5s">
+				</div>	
+				<div hx-get="{% url 'view_reservation_progress' reservation_id=reservation.id %}" hx-trigger="load, every 5s"></div>
+			</article>
+		</div>
+		<div hx-get="{% url 'view_reservation_status' reservation_id=reservation.id %}" hx-trigger="load, every 5s"></div>
+	</div>
+	<div hx-get="{% url 'view_reservation_buttons' reservation_id=reservation.id %}" hx-trigger="load, every 5s">
+	</div>
+</div>	
+{% endblock content %}

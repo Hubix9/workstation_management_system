@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'main_server/pico.min.css' %}">
+	<script src="{% static 'main_server/htmx.min.js' %}"></script>
+</head>
+
+<body>
+	{% block content %}{% endblock content %}
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+
+
+<nav class="container">
+	<ul>
+		<li><strong>Workstation Management Dashboard</strong></li>
+	</ul>
+	{% include "frontend/navbar_buttons.html" %}
+</nav>
+
+
+
+<div style="text-align: center;" class="container">
+	<p>Hello, {{username}}, this is your dashboard</p>
+	<div class="grid">
+		<div>
+			<article>
+				<header>Want to reserve a workstation? Click below!</header>
+				<a href="{% url 'create_reservation' %}" role="button">Create Reservation</a>	
+			</article>
+		</div>
+		<div>
+			<article>
+				<header>Your upcoming reservations</header>
+
+				{% if latest_reservations %}
+				{% for reservation in latest_reservations %}
+				<article>
+					<header>{{ reservation.user_label }}</header>
+					{{ reservation.start_date }}
+					{{ reservation.status }}
+					{% if reservation.status == "Active" %}
+					✅
+					{% elif reservation.status == "Approved" %}
+					☑
+					{% elif reservation.status == "Pending" %}
+					⌛
+					{% elif reservation.status == "Cancelled" %}
+					⛔
+					{% elif reservation.status == "Rejected" %}
+					⛔
+					{% elif reservation.status == "Completed" %}
+					🏁
+					{% endif %}
+					<div>
+						<a href="{% url 'view_reservation' reservation_id=reservation.id %}">View</a>
+					</div>
+				</article>
+				{% endfor %}
+				{% else %}
+				<article>
+					<header>No reservations</header>
+					Please create a reservation and wait for it's approval
+				</article>
+				{% endif %}
+			</article>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,52 @@
+<article class="container">
+	<header class="container" style="text-align: center;">Reservation controls:</header>
+	<div class="grid">
+		<div style="text-align: center;">
+			{% if reservation.workstation.status == "Active" %}
+			<a href="{% url 'access_reservation' reservation_id=reservation.id %}" role="button"> Access Reservation</a>
+
+			{% else %}
+			<a href="{% url 'access_reservation' reservation_id=reservation.id %}" role="button" disabled
+				data-tooltip="Reservation cannot be accessed right now"> Access Reservation</a>
+			{% endif %}
+		</div>
+		<div>
+			{% if reservation.status == "Active" and reservation.workstation.status != "Restart" %}
+			<a href="#" 
+			id="active-restart-button" 
+			class="secondary"	
+			role="button" 
+			onclick="document.getElementById('restart-form').submit();">Restart Workstation</a>	
+			{% elif reservation.status == "Active" and reservation.workstation.status == "Restart" %}
+			<a type="submit" 
+			class="secondary" 
+			data-tooltip="Reservation cannot be restarted right now" 
+			form="cancel-form" 
+			role="button" 
+			disabled>Restart Workstation<div aria-busy="true"></div></a>
+			{% else %}
+			<a type="submit" class="secondary" data-tooltip="Reservation cannot be cancelled right now" form="cancel-form" role="button" disabled>Restart Workstation</a>
+			{% endif %}
+			<form action="{% url 'restart_workstation' reservation_id=reservation.id %}" method="post" id="restart-form">
+				{% csrf_token %}	
+			</form>
+		</div>
+		<div>
+			{% if reservation.status != "Cancelled" and reservation.status != "Rejected" and reservation.status != "Broken" and reservation.status != "Completed" %}
+			<a href="#" 
+			id="active-cancel-button" 
+			style="background-color: #D93526" 
+			role="button" 
+			onclick="document.getElementById('cancel-form').submit();">Cancel Reservation</a>
+			<form action="{% url 'cancel_reservation' reservation_id=reservation.id %}" method="post" id="cancel-form">
+				{% csrf_token %}	
+			</form>
+			{% else %}
+			<a type="submit" style="background-color: #D93526" data-tooltip="Reservation cannot be cancelled right now" form="cancel-form" role="button" disabled>Cancel Reservation</a>
+			<form action="{% url 'cancel_reservation' reservation_id=reservation.id %}" method="post" id="cancel-form">
+				{% csrf_token %}	
+			</form>
+			{% endif %}
+		</div>
+	</div>
+</article>

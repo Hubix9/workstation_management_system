@@ -1,0 +1,24 @@
+{% extends "frontend/base.html" %}
+
+{% block content %}
+<div style="margin: auto auto; width: 50%;">	
+	<form class="register-form" method="POST" action="{% url 'register' %}">
+		{% csrf_token %}
+		<h4 class="register-title">Registration</h3>
+		<p>{{ form.username.label }}</p>
+		{{ form.username }}
+		{{ form.username.errors }}
+		<p>{{ form.email.label }}</p>
+		{{ form.email }}
+		{{ form.email.errors }}
+		<p>{{ form.password1.label }}</p>
+		{{ form.password1 }}
+		{{ form.password1.errors }}
+		<p>{{ form.password2.label }}</p>
+		{{ form.password2 }}
+		{{ form.password2.errors }}
+		<button type="submit"> Create </button>
+		<a href="{% url 'login' %}">Already registered? Log in here!</a>
+		</form>
+</div>
+{% endblock content %}

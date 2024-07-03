@@ -1,0 +1,23 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+<div style="text-align: center;">
+	{% if username %}
+	<h1>Hello {{ username }}. You're at the workstation_management index.</h1>
+	{% else %}
+	<h1>Hello. You're at the workstation_management index.</h1>
+	{% endif %}
+</div>
+
+
+<div style="text-align: center;">
+	{% csrf_token %}
+	<a href="{% url 'dashboard' %}">Dashboard</a>
+	<a href="{% url 'login' %}">Login</a>
+	<a href="{% url 'private' %}">Private</a>
+	<a href="{% url 'register' %}">Register</a>
+	<a hx-post="{% url 'logout' %}" hx-swap="innerHTML" hx-target="body" hx-include="[name='csrfmiddlewaretoken']"
+		style="cursor: pointer">logout</a>
+</div>
+{% endblock content %}

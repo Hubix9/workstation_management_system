@@ -1,0 +1,146 @@
+<article class="container">
+	<header class="container" style="text-align: center;">Reservation status:</header>
+	<div class="grid">
+		<div>
+			<div class="grid">
+				<div>
+					<p data-tooltip="Reservation is awaiting processing" style="border-bottom: 2px;">
+						Pending ⓘ
+					</p>
+				</div>
+				{% if reservation.status == "Pending" %}
+				<div>
+					<p aria-busy="true"></p>
+				</div>	
+				{% else %}
+				<div> 
+					<p>✅</p>
+				</div>
+				{% endif %}
+			</div>
+			<div class="grid">
+				<div>
+					<p data-tooltip="Reservation has been approved" style="border-bottom: 2px;">
+						Approved ⓘ
+					</p>
+				</div>
+				{% if reservation.status == "Pending" %}
+				<div>
+					<p aria-busy="true"></p>
+				</div>	
+				{% elif reservation.status == "Rejected" %}
+				<div> 
+					<p>⛔</p>
+				</div>
+				{% else %}
+				<div> 
+					<p>
+						✅
+					</p>
+				</div>
+				{% endif %}
+			</div>
+			<div class="grid">
+				<div>
+					<p data-tooltip="Workstation for reservation will be created at requested time" style="border-bottom: 2px;">
+						Scheduled ⓘ
+					</p>
+				</div>
+				{% if reservation.status == "Pending" %}
+				<div>
+					<p aria-busy="true"></p>
+				</div>
+				{% elif reservation.status == "Rejected" %}
+				<div> 
+					<p>⛔</p>
+				</div>
+				{% else %}
+				<div> 
+					<p>✅</p>
+				</div>
+				{% endif %}
+			</div>
+			<div class="grid">
+				<div>
+					<p data-tooltip="Workstation is being setup" style="border-bottom: 2px;">
+						Setup ⓘ
+					</p>
+				</div>
+				{% if reservation.workstation.status == "Setup" or reservation.workstation.status == "Scheduled" or reservation.status == "Pending" %}
+				<div>
+					<p aria-busy="true"></p>
+				</div>	
+				{% elif reservation.status == "Rejected" %}
+				<div> 
+					<p>⛔</p>
+				</div>
+				{% else %}
+				<div> 
+					<p>✅</p>
+				</div>
+				{% endif %}
+			</div>
+			<div class="grid">
+				<div>
+					<p data-tooltip="Workstation is active and ready to be accessed" style="border-bottom: 2px;">
+						Active ⓘ
+					</p>
+				</div>
+				{% if reservation.status == "Approved" or reservation.status == "Pending" %}
+				<div>
+					<p aria-busy="true"></p>
+				</div>	
+				{% elif reservation.status == "Rejected" %}
+				<div> 
+					<p>⛔</p>
+				</div>
+				{% else %}
+				<div> 
+					<p>✅</p>
+				</div>
+				{% endif %}
+			</div>
+			<div class="grid">
+				
+				{% if reservation.status == "Completed" %}
+				<div>
+					<p data-tooltip="Workstation has been cleaned up and reservation has been completed" style="border-bottom: 2px;">
+						Completed ⓘ
+					</p>
+				</div>
+				<div>
+					<p>✅</p>
+				</div>
+				{% elif reservation.status == "Rejected" %}
+				<div>
+					<p data-tooltip="Reservation has been rejected due to lack of resources at the requested time" style="border-bottom: 2px;">
+						Rejected ⓘ
+					</p>
+				</div>
+				<div> 
+					<p>✅</p>
+				</div>
+				{% elif reservation.status == "Cancelled" %}
+				<div>
+					<p data-tooltip="Reservation has been cancelled by the user, workstation has been cleaned up" style="border-bottom: 2px;">
+						Cancelled ⓘ
+					</p>
+				</div>
+				<div>
+					<p>✅</p>
+				</div>
+				</div>
+				{% else %}
+				<div>
+					<p data-tooltip="Workstation has been cleaned up and reservation has been completed" style="border-bottom: 2px;">
+						Completed ⓘ
+					</p>
+				</div>
+				<div> 
+					<p aria-busy="true"></p>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</article>

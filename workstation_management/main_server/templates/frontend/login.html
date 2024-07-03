@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+<div style="margin: 0 auto; width: 50%;">
+	<form method="POST" action="{% url 'login' %}">
+		{% csrf_token %}
+		
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username" required>
+		
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+		{% if form.errors %}
+		<p>Your username and password didn't match. Please try again.</p>
+		{% endif %}	
+		<button type="submit">Login</button>
+		<input type="hidden" name="next" value="{{ next }}" />
+	</form>
+	<a href="{% url 'register' %}">Don't have an account? Register here!</a>
+</div>
+{% endblock content %}

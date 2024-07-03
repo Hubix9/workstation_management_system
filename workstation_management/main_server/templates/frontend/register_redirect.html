@@ -1,0 +1,10 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+<meta http-equiv="refresh" content="5;url={% url 'login' %}" />
+<div style="text-align: center;">	
+	<h1>You have been successfully registered!</h1>
+	<h5>Redirecting to login page...</h1>
+</div>
+{% endblock content %}

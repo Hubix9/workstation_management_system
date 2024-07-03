@@ -1,0 +1,15 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+<meta http-equiv="refresh" content="5;url={% url 'dashboard' %}" />
+<div style="text-align: center;">	
+	{% if result %}
+	<h1>Reservation successfully cancelled!</h1>
+	<h5>Redirecting to dashboard...</h1>
+	{% else %}
+	<h1>Reservation could not be cancelled!</h1>
+	<h5>Redirecting to dashboard...</h1>
+	{% endif %}
+</div>
+{% endblock content %}

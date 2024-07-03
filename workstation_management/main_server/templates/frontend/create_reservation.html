@@ -1,0 +1,279 @@
+{% extends "frontend/base.html" %}
+
+
+{% block content %}
+
+<style>
+	.badge {
+		background-color: teal;
+		color: white;
+		padding: 4px 8px;
+		margin-left: 4px;
+		margin-top: 4px;
+		text-align: center;
+		border-radius: 5px;
+		overflow-wrap: break-word;
+	}
+</style>
+<script>
+	async function get_compatible_tags(data) {
+		//Fetch compatible tags
+		return fetch('/api/get_tags_compatible_with_tags/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': '{{ csrf_token }}'
+			},
+			body: JSON.stringify({
+				'tags': Array.from(data)
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Received compatible tags information:')
+				console.log(data);
+				return data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	}
+
+	async function get_all_tags() {
+		//Fetch all tags
+		return fetch('/api/get_all_tags/', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': '{{ csrf_token }}'
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Received all tags information:')
+				console.log(`Received data: ${data}`);
+				return data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	}
+
+	async function get_all_tags_with_text(data) {
+		//Fetch compatible tags
+		return fetch('/api/get_all_tags_containing_text/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': '{{ csrf_token }}'
+			},
+			body: JSON.stringify({
+				'text': data
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Received tags containing text')
+				console.log(data);
+				return data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	}
+</script>
+
+
+<nav class="container">
+	<ul>
+		<li><strong>Workstation Management Dashboard</strong></li>
+	</ul>
+	<ul>
+		<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+		<li><a href="{% url 'reservations' %}">My Reservations</a></li>
+		<li><a href="{% url 'create_reservation' %}">Create Reservation</a></li>
+	</ul>
+</nav>
+
+<div class="container">
+	<article>
+		<header>Create a new reservation:</header>
+		<input class="form-control" type="search" id="search-box"
+				placeholder="Search for tags you would like to use" name="search"></input>
+		<form action="{% url 'create_reservation' %}" method="post">
+			{% csrf_token %}
+			<input type='hidden' id='selected-tags-submit' name='selected_tags'/>	
+			<label>Tag search:</label>
+			<!-- Searched tags -->
+			<article id="searched-tags-container">
+			</article>
+
+			<!-- Selected tags -->
+			{{ form.selected_tags.errors}}
+			<label>Selected tags:</label>
+			<article id="selected-tags-container">
+			</article>	
+
+			{{ form.user_label }}
+			{{ form.user_label.errors }}
+
+			<div class="container">
+				<div class="grid container">
+					<div>
+						<article>
+							<header>Reservation start time ✅:</header>
+							{{ form.start_date.label_tag }}
+							{{ form.start_date }}
+							{{ form.start_date.errors }}
+						</article>
+					</div>
+					<div>
+						<article>
+							<header>Reservation end time 🏁:</header>
+							{{ form.end_date.label_tag }}
+							{{ form.end_date }}
+							{{ form.end_date.errors }}
+						</article>
+					</div>
+
+				</div>
+			</div>
+			<input type="submit" value="Create Reservation">
+		</form>
+	</article>
+</div>
+
+
+<script>
+	selected_tags = {}
+	searched_tags = {}
+
+	selected_tags_container = document.getElementById('selected-tags-container')
+	searched_tags_container = document.getElementById('searched-tags-container')
+
+	selected_tags_element = document.getElementById('selected-tags-submit')
+
+	search_box = document.getElementById('search-box')
+
+	var search_event = new Event('input', {
+		bubbles: true,
+	});
+
+	function update_selected_tags() {
+		selected_tags_element.value = Array.from(Object.keys(selected_tags)).join('&')
+	}
+
+
+	function create_tag(text) {
+		tag_element = document.createElement('a')
+		tag_element.classList.add('badge')
+		tag_element.href = '#'
+		tag_element.innerText = text
+		return tag_element
+	}
+
+	function add_searched_tag(text, disabled = false) {
+		if (text in searched_tags) {
+			searched_tags[text].remove()
+			delete searched_tags[text]
+		}
+		tag_element = create_tag(text)
+		if (disabled) {
+			tag_element.setAttribute('disabled', '')
+			tag_element.style.pointerEvents = 'none'
+			tag_element.style.cursor = 'default'
+			tag_element.style.backgroundColor = 'gray'
+		}
+		tag_element.addEventListener('click', (event) => {
+			add_selected_tag(event.target.innerText)
+			//event.target.remove()
+			delete searched_tags[text]
+			search_box.dispatchEvent(search_event);
+		})
+		searched_tags_container.appendChild(tag_element)
+		searched_tags[text] = tag_element
+	}
+
+	function add_selected_tag(text) {
+		if (text in selected_tags) {
+			seelected_tags[text].remove()
+			delete selected_tags[text]
+		}
+		tag_element = create_tag(text)
+		tag_element.addEventListener('click', (event) => {
+			//add_searched_tag(event.target.innerText)
+			event.target.remove()
+			delete selected_tags[text]
+			search_box.dispatchEvent(search_event);
+		})
+		selected_tags_container.appendChild(tag_element)
+		selected_tags[text] = tag_element
+	}
+
+	async function disable_tag(tag) {
+		tag.setAttribute('disabled', '')
+		tag.style.pointerEvents = 'none'
+		tag.style.cursor = 'default'
+		tag.style.backgroundColor = 'gray'
+	}
+
+	async function enable_tag(tag) {
+		tag.removeAttribute('disabled')
+		tag.style.pointerEvents = 'auto'
+		tag.style.cursor = 'pointer'
+		tag.style.backgroundColor = 'teal'
+	}	
+
+	// A function that completes hides the .badge based tag
+	async function hide_tag(tag) {
+		tag.style.display = 'none'
+	}
+
+	async function disable_incompatible_tags(tags) {
+		compatible_tags = await get_compatible_tags(tags)
+		compatible_tags = compatible_tags['compatible_tags']
+		console.log(typeof compatible_tags)
+		for (tag in searched_tags) {
+			if (compatible_tags.includes(tag)) {
+				console.log(`Enabling tag: ${tag}`)
+				enable_tag(searched_tags[tag])
+			}
+			else if (tag in selected_tags) {
+				hide_tag(searched_tags[tag])	
+			}
+			else {
+				console.log(`Disabling tag: ${tag}`)
+				disable_tag(searched_tags[tag])
+			}
+		}
+
+	}
+
+
+	search_box.addEventListener('input', async (event) => {
+		console.log(event.target.value)
+		data = await get_all_tags_with_text(event.target.value)
+		console.log(data)
+		data = data['data']
+		searched_tags_container.innerHTML = ''
+		for (tag of data) {
+			tag = tag['value']
+			if (tag in selected_tags) {
+				add_searched_tag(tag, disabled = true)
+			} else {
+				add_searched_tag(tag)
+			}
+		}
+		console.log(selected_tags)
+		disable_incompatible_tags(Object.keys(selected_tags)).then(() => {
+			console.log('Disabled incompatible tags')
+			update_selected_tags()
+		})
+	})
+
+
+	search_box.dispatchEvent(search_event);
+</script>
+
+
+{% endblock content %}

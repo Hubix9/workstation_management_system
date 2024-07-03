@@ -1,0 +1,18 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+
+<nav class="container">
+	<ul>
+		<li><strong>Workstation Management Dashboard</strong></li>
+	</ul>
+	{% include "frontend/navbar_buttons.html" %}
+</nav>
+
+<div style="text-align: center;"></div>
+
+<article class="container">
+	<header class="container" style="text-align: center;">Current reservations:</header>
+	<div id="table-container" hx-get="/reservations_table/1/" hx-trigger="load"></div>	
+</article>
+
+{% endblock content %}

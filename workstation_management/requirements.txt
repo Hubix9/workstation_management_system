@@ -1,0 +1,10 @@
+django
+proxmoxer
+djangoql
+django-extensions
+fastapi
+fastapi-jsonrpc
+httpx
+regex
+jsonrpcclient
+urllib3

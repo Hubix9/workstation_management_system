@@ -1,0 +1,50 @@
+<table>
+	<tr>
+		<th>Label</th>
+		<th>Status</th>
+		<th>Start date</th>
+		<th>End date</th>
+		<th>Options</th>
+	</tr>
+	{% for reservation in reservations %}
+	<tr>
+		<td>{{ reservation.user_label }}</td>
+		<td>
+			{{ reservation.status }}
+			{% if reservation.status == "Active" %}
+			✅
+			{% elif reservation.status == "Approved" %}
+			☑
+			{% elif reservation.status == "Pending" %}
+			⌛
+			{% elif reservation.status == "Cancelled" %}
+			⛔
+			{% elif reservation.status == "Rejected" %}
+			⛔
+			{% elif reservation.status == "Completed" %}
+			🏁
+			{% endif %}
+
+		</td>
+		<td>{{ reservation.start_date }}</td>
+		<td>{{ reservation.end_date }}</td>
+		<td><a href="{% url 'view_reservation' reservation_id=reservation.id %}">View</a></td>
+	</tr>
+	{% endfor %}
+</table>
+
+<div class="container">
+	<div class="grid" style="text-align: center;">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		{% if current_page > 1 %}
+		<div><a href="#" hx-get="/reservations_table/{{ current_page|add:"-1" }}/" hx-target="#table-container">Previous page</a></div>
+		{% endif %}
+		<div><p>{{ current_page }}</p></div>
+		{% if current_page < max_pages %}
+		<div><a href="#" hx-get="/reservations_table/{{ current_page|add:"1" }}/" hx-target="#table-container">Next page</a></div>
+		{% endif %}
+	</div>
+</div>

@@ -1,0 +1,23 @@
+{% extends "frontend/base.html" %}
+{% load settings_value %}
+{% block content %}
+
+
+
+<nav class="container">
+	<ul>
+		<li><strong>Workstation Management Dashboard</strong></li>
+		
+	</ul>
+	{% include "frontend/navbar_buttons.html" %}
+</nav>
+<div>
+	<div style="text-align: center;">
+		<p>Hello, {{username}}, you are accessing reservation: {{reservation.user_label}}</p>
+		<iframe src="{% settings_value "NOVNC_SERVER_ADDRESS" %}?path=?token={{ mapping_target }}&autoconnect=true&shared=false&resize=remote"
+			title="VNC connector" width="1024" height="768"></iframe>	
+	</div>
+
+</div>
+
+{% endblock content %}
